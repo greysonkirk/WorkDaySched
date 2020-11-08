@@ -69,44 +69,34 @@ function loadDayPlanner() {
         const hour = hours[i];
         //adding class based off time.
         let txtClass = ''
-        if (hour.time < moment().format("HH") - 4) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 4) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 4) { txtClass = "future" }
-
+        if (hour.time < moment().format("HH") - 6) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 6) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 6) { txtClass = "future" }
         //adding each time slot 
         let hourID = hour.id
         let $planner = $(`
                             <form class="row">
-                                <div id="hour" class="col-md-2 hour">${hour.hourText} </div>
+                                <div id="hour" class="col-md-2 hour text-center">${hour.hourText} </div>
                                 <div id="task" class="col-md-9 description p-0"><textarea id="${hourID}" class="${txtClass}">${hour.task}</textarea></div>
                                 <button id="sbtn" class="col-md-1 saveBtn"><i class="far fa-save fa-lg  "></i> </button>
                             </form> 
                             `);
-
         $("#container").append($planner);
-
     };
-
-
 };
-
+//displaying the tasks
 function displayTask() {
-
-
     hours.forEach(function(hour) {
         $(`#${hour.id}`).val(hour.task);
     })
-
 };
-
+//updating the hours array 
 function saveTask() {
-
     localStorage.setItem("hours", JSON.stringify(hours));
 }
-
+//save button
 $(".saveBtn").on("click", function(event) {
     event.preventDefault();
     var i = $(this).siblings(".description").children("textarea").attr("id");
     hours[i].task = $(this).siblings(".description").children("textarea").val();
-
     saveTask();
     displayTask();
     console.log(hours[i])
@@ -114,15 +104,12 @@ $(".saveBtn").on("click", function(event) {
 
 
 function init() {
-    // Get stored todos from localStorage
-    // Parsing the JSON string to an object
+    //local storage set up 
     let hoursSaved = JSON.parse(localStorage.getItem("hours"));
-
-    // If todos were retrieved from localStorage, update the todos array to it
+    //if nothing has be saved yet, use origial hours array otherwise use hoursSave array
     if (hoursSaved !== null) {
         hours = hoursSaved;
     }
-
-    // Render todos to the DOM
+    // Render tasks
     displayTask();
 }
