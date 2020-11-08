@@ -69,7 +69,7 @@ function loadDayPlanner() {
         const hour = hours[i];
         //adding class based off time.
         let txtClass = ''
-        if (hour.time < moment().format("HH") - 6) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 6) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 6) { txtClass = "future" }
+        if (hour.time < moment().format("HH")) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH")) { txtClass = "present"; } else if (hour.time > moment().format("HH")) { txtClass = "future" }
         //adding each time slot 
         let hourID = hour.id
         let $planner = $(`
