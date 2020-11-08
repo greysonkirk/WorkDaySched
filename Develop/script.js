@@ -3,7 +3,7 @@ let today = moment().format("MMMM Do YYYY");
 $("#currentDay").text(today)
 
 console.log(today)
-let hoursSaved = JSON.parse(localStorage.getItem("hours"));
+
 let hours = [{
         id: "0",
         hourText: "9 am",
@@ -59,69 +59,46 @@ let hours = [{
         task: ""
     },
 ]
-loadDayPlanner()
+init()
+loadDayPlanner();
 
 function loadDayPlanner() {
-    if (hoursSaved === null) {
-        for (let i = 0; i < hours.length; i++) {
-            const hour = hours[i];
-            //adding class based off time.
-            let txtClass = ''
-            if (hour.time < moment().format("HH") - 4) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 4) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 4) { txtClass = "future" }
+    //seeing if local storage is being used or not 
 
-            //adding each time slot 
-            let hourID = hour.id
-            let $planner = $(`
-      <form class="row">
-        <div id="hour" class="col-md-2 hour">${hour.hourText} </div>
-        <div id="task" class="col-md-9 description p-0"><textarea id="${hourID}" class="${txtClass}">${hour.task}</textarea></div>
-        <button id="sbtn" class="col-md-1 saveBtn"><i class="far fa-save fa-lg  "></i> </button>
-    </form>
-    `);
+    for (let i = 0; i < hours.length; i++) {
+        const hour = hours[i];
+        //adding class based off time.
+        let txtClass = ''
+        if (hour.time < moment().format("HH") - 4) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 4) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 4) { txtClass = "future" }
 
-            console.log(hour.time)
-            console.log(moment().format("HH") - 4)
+        //adding each time slot 
+        let hourID = hour.id
+        let $planner = $(`
+                            <form class="row">
+                                <div id="hour" class="col-md-2 hour">${hour.hourText} </div>
+                                <div id="task" class="col-md-9 description p-0"><textarea id="${hourID}" class="${txtClass}">${hour.task}</textarea></div>
+                                <button id="sbtn" class="col-md-1 saveBtn"><i class="far fa-save fa-lg  "></i> </button>
+                            </form> 
+                            `);
 
-            $("#container").append($planner);
+        $("#container").append($planner);
 
-        };
+    };
 
-    } else {
-        for (let i = 0; i < hoursSaved.length; i++) {
-            const hour = hoursSaved[i];
-            //adding class based off time.
-            let txtClass = ''
-            if (hour.time < moment().format("HH") - 4) { txtClass = "past"; } else if (parseInt(hour.time) === moment().format("HH") - 4) { txtClass = "present"; } else if (hour.time > moment().format("HH") - 4) { txtClass = "future" }
 
-            //adding each time slot 
-            let hourID = hour.id
-            let $planner = $(`
-      <form class="row">
-        <div id="hour" class="col-md-2 hour">${hour.hourText} </div>
-        <div id="task" class="col-md-9 description p-0"><textarea id="${hourID}" class="${txtClass}">${hour.task}</textarea></div>
-        <button id="sbtn" class="col-md-1 saveBtn"><i class="far fa-save fa-lg  "></i> </button>
-    </form>
-    `);
-
-            console.log(hour.time)
-            console.log(moment().format("HH") - 4)
-
-            $("#container").append($planner);
-
-        };
-
-    }
 };
 
 function displayTask() {
 
+
     hours.forEach(function(hour) {
         $(`#${hour.id}`).val(hour.task);
     })
-    console.log(hours[0])
+
 };
 
 function saveTask() {
+
     localStorage.setItem("hours", JSON.stringify(hours));
 }
 
@@ -129,8 +106,23 @@ $(".saveBtn").on("click", function(event) {
     event.preventDefault();
     var i = $(this).siblings(".description").children("textarea").attr("id");
     hours[i].task = $(this).siblings(".description").children("textarea").val();
-    localStorage.setItem("hours", JSON.stringify(hours));
 
-    // saveTask();
+    saveTask();
     displayTask();
+    console.log(hours[i])
 })
+
+
+function init() {
+    // Get stored todos from localStorage
+    // Parsing the JSON string to an object
+    let hoursSaved = JSON.parse(localStorage.getItem("hours"));
+
+    // If todos were retrieved from localStorage, update the todos array to it
+    if (hoursSaved !== null) {
+        hours = hoursSaved;
+    }
+
+    // Render todos to the DOM
+    displayTask();
+}
